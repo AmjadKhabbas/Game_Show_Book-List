@@ -5,7 +5,7 @@ function App() {
   const [games, setGames] = useState([]);
   const [books, setBooks] = useState([]);
   const [tvShows, setTvShows] = useState([]);
-  const [newItem, setNewItem] = useState({ type: 'game', name: '', url: '', dimensions: 'width=800,height=600' });
+  const [newItem, setNewItem] = useState({ type: 'game', name: '', url: '', dimensions: 'width=800,height=600', rating: 5 });
   const [editingItem, setEditingItem] = useState(null);
 
   // Load initial data from localStorage
@@ -52,7 +52,7 @@ function App() {
         return;
     }
     
-    setNewItem({ type: 'game', name: '', url: '', dimensions: 'width=800,height=600' });
+    setNewItem({ type: 'game', name: '', url: '', dimensions: 'width=800,height=600', rating: 5 });
   };
 
   const handleEditItem = (type, index, updatedItem) => {
@@ -115,7 +115,7 @@ function App() {
     return (
       <form onSubmit={(e) => {
         e.preventDefault();
-        handleEditItem(type, index, {name: editingItem.name, url: editingItem.url});
+        handleEditItem(type, index, {name: editingItem.name, url: editingItem.url, rating: editingItem.rating});
       }} style={{
         display: 'flex',
         flexDirection: 'column',
@@ -132,6 +132,14 @@ function App() {
           type="url"
           value={editingItem.url}
           onChange={(e) => setEditingItem({...editingItem, url: e.target.value})}
+          style={{ padding: '0.25rem' }}
+        />
+        <input
+          type="number"
+          min="1"
+          max="10"
+          value={editingItem.rating || 5}
+          onChange={(e) => setEditingItem({...editingItem, rating: parseInt(e.target.value)})}
           style={{ padding: '0.25rem' }}
         />
         <div style={{display: 'flex', gap: '0.5rem'}}>
@@ -198,7 +206,7 @@ function App() {
                       fontFamily: "'Roboto', sans-serif"
                     }}
                   >
-                    Play {game.name}
+                    Play {game.name} {game.rating && `(${game.rating}/10)`}
                   </button>
                   <button
                     onClick={() => setEditingItem({type: 'game', index, ...game})}
@@ -240,7 +248,7 @@ function App() {
                     display: 'block',
                     fontFamily: "'Roboto', sans-serif"
                   }}>
-                    {book.name}
+                    {book.name} {book.rating && `(${book.rating}/10)`}
                   </div>
                   <button
                     onClick={() => setEditingItem({type: 'book', index, ...book})}
@@ -282,7 +290,7 @@ function App() {
                     display: 'block',
                     fontFamily: "'Roboto', sans-serif"
                   }}>
-                    {show.name}
+                    {show.name} {show.rating && `(${show.rating}/10)`}
                   </div>
                   <button
                     onClick={() => setEditingItem({type: 'show', index, ...show})}
@@ -344,6 +352,15 @@ function App() {
               placeholder="URL"
               value={newItem.url}
               onChange={(e) => setNewItem({...newItem, url: e.target.value})}
+              style={{ padding: '0.5rem' }}
+            />
+            <input
+              type="number"
+              min="1"
+              max="10"
+              placeholder="Rating (1-10)"
+              value={newItem.rating}
+              onChange={(e) => setNewItem({...newItem, rating: parseInt(e.target.value)})}
               style={{ padding: '0.5rem' }}
             />
             <button type="submit" style={{
